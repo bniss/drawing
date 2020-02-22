@@ -8,7 +8,13 @@ import json
 run_once = 0 
 
 # make a figure + axes
-fig, ax = plt.subplots(1, 1, tight_layout=True)
+# fig, ax = plt.subplots(1, 1, tight_layout=True)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+win = fig.canvas.manager.window
+# fig.canvas.manager.window.after()
+plt.ion()
+
 
 # def init_grid():
 #     run_once = 0 
@@ -16,45 +22,73 @@ im = None
 
 def show_grid(np_array):
     global run_once, im
+
+    # if run_once == 1:
+    #     plt.close()
+
     array_shape = np_array.shape
     x = array_shape[0]
     y = array_shape[1]
 
+    # make color map
+    my_cmap = clr.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00', '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
+
+    # set the 'bad' values (nan) to be white and transparent
+    my_cmap.set_bad(color='w', alpha=0)
+
+    bound = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    my_norm = clr.BoundaryNorm(bound, my_cmap.N, clip=True)
+
+    # # draw the grid
+    for i in range(x + 1):
+        ax.axhline(i, lw=2, color='k', zorder=5)
+
+    for j in range(y + 1):
+        ax.axvline(j, lw=2, color='k', zorder=5)
+
+    # draw the boxes
+    im = ax.imshow(np_array, interpolation='none', cmap=my_cmap, norm=my_norm, extent=[0, y, 0, x], zorder=0)
+ 
+    # turn off the axis labels
+    ax.axis('off')
+
+    # if run_once == 0:
+    #     run_once = 1 
+    #     print('client A request')
+    #     fig.show()
+    #     fig.canvas.draw()
+    #     fig.canvas.flush_events()
+    #     plt.show()
+    #     plt.pause(0.0001)
+    #     plt.clf()
+    # else:
+    #     print('client B request')
+    #     fig.show()
+    #     fig.canvas.draw()
+    #     plt.show()
+
+
     if run_once == 0:
         run_once = 1 
 
+        print('client A request')
+
         # make a figure + axes
         # fig, ax = plt.subplots(1, 1, tight_layout=True)
-
-        # make color map
-        my_cmap = clr.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00', '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
-
-        # set the 'bad' values (nan) to be white and transparent
-        my_cmap.set_bad(color='w', alpha=0)
-
-        bound = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-        my_norm = clr.BoundaryNorm(bound, my_cmap.N, clip=True)
-
-        # # draw the grid
-        for i in range(x + 1):
-            ax.axhline(i, lw=2, color='k', zorder=5)
-
-        for j in range(y + 1):
-            ax.axvline(j, lw=2, color='k', zorder=5)
-
-        # draw the boxes
-        im = ax.imshow(np_array, interpolation='none', cmap=my_cmap, norm=my_norm, extent=[0, y, 0, x], zorder=0)
-
-        # turn off the axis labels
-        ax.axis('off')
-
+        fig.show()
+        fig.canvas.draw()
+        fig.canvas.flush_events()
         plt.show()
         # plt.pause(0.0001)
         # plt.clf()
     else:
-        im.set_array(np_array.ravel())
+        print('client B request')
+        # im.set_array(np_array.ravel())
+        im.set_array(np_array)
+        fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
+        plt.draw()
         # ax.clear()
         # plt.draw()
         # plt.pause(0.0001)
