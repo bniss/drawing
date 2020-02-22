@@ -8,11 +8,10 @@ import json
 run_once = 0 
 
 # make a figure + axes
-# fig, ax = plt.subplots(1, 1, tight_layout=True)
 fig = plt.figure()
 ax = fig.add_subplot(111)
-win = fig.canvas.manager.window
-# fig.canvas.manager.window.after()
+# win = fig.canvas.manager.window
+
 plt.ion()
 
 
@@ -52,49 +51,24 @@ def show_grid(np_array):
     # turn off the axis labels
     ax.axis('off')
 
-    # if run_once == 0:
-    #     run_once = 1 
-    #     print('client A request')
-    #     fig.show()
-    #     fig.canvas.draw()
-    #     fig.canvas.flush_events()
-    #     plt.show()
-    #     plt.pause(0.0001)
-    #     plt.clf()
-    # else:
-    #     print('client B request')
-    #     fig.show()
-    #     fig.canvas.draw()
-    #     plt.show()
-
-
     if run_once == 0:
         run_once = 1 
 
         print('client A request')
-
         # make a figure + axes
         # fig, ax = plt.subplots(1, 1, tight_layout=True)
         fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
         plt.show()
-        # plt.pause(0.0001)
-        # plt.clf()
     else:
-        print('client B request')
+        print('client B, C, D, ... request')
         # im.set_array(np_array.ravel())
         im.set_array(np_array)
         fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
         plt.draw()
-        # ax.clear()
-        # plt.draw()
-        # plt.pause(0.0001)
-        # plt.clf()
-
-
 
 def read_json(file_path):
     with open(file_path) as json_data:
