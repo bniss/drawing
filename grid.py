@@ -8,9 +8,11 @@ import json
 run_once = 0 
 
 # make a figure + axes
-fig = plt.figure()
-ax = fig.add_subplot(111)
+fig = plt.figure(1)
+ax = fig.add_subplot(121)
 # win = fig.canvas.manager.window
+
+ax_out = fig.add_subplot(122)
 
 plt.ion()
 
@@ -18,8 +20,9 @@ plt.ion()
 # def init_grid():
 #     run_once = 0 
 im = None
+im_out = None
 
-def show_grid(np_array):
+def show_grid(np_array, np_out_array):
     global run_once, im
 
     # if run_once == 1:
@@ -28,6 +31,10 @@ def show_grid(np_array):
     array_shape = np_array.shape
     x = array_shape[0]
     y = array_shape[1]
+
+    array_out_shape = np_out_array.shape
+    x_out = array_out_shape[0]
+    y_out = array_out_shape[1]
 
     # make color map
     my_cmap = clr.ListedColormap(['#000000', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00', '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
@@ -44,15 +51,25 @@ def show_grid(np_array):
 
     for j in range(y + 1):
         ax.axvline(j, lw=2, color='k', zorder=5)
+        ax_out.axvline(j, lw=2, color='k', zorder=5)
+
+    for i in range(x_out + 1):
+        ax_out.axhline(i, lw=2, color='k', zorder=5)
+
+    for j in range(y_out + 1):
+        ax_out.axvline(j, lw=2, color='k', zorder=5)
 
     # draw the boxes
     im = ax.imshow(np_array, interpolation='none', cmap=my_cmap, norm=my_norm, extent=[0, y, 0, x], zorder=0)
  
-    # turn off the axis labels
-    ax.axis('off')
+    im_out = ax_out.imshow(np_out_array, interpolation='none', cmap=my_cmap, norm=my_norm, extent=[0, y_out, 0, x_out], zorder=0)
 
     if run_once == 0:
         run_once = 1 
+
+        # turn off the axis labels
+        ax.axis('off')
+        ax_out.axis('off')
 
         print('client A request')
         # make a figure + axes
@@ -60,14 +77,17 @@ def show_grid(np_array):
         fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
+
         plt.show()
     else:
         print('client B, C, D, ... request')
         # im.set_array(np_array.ravel())
         im.set_array(np_array)
+        im_out.set_array(np_out_array)
         fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
+
         plt.draw()
 
 def read_json(file_path):
@@ -90,9 +110,10 @@ def rendering(file_path, train_type, in_out, index=0):
     if train_type != 0:
         val_train = 'test'
 
-    np_data = np.array( data[val_train][index][val_in_out] )
+    np_data = np.array( data[val_train][index]['input'] )
+    np_out_data = np.array( data[val_train][index]['output'] )
 
-    show_grid(np_data)
+    show_grid(np_data, np_out_data)
 
 def main():
     print('version: {}'.format(0))
