@@ -1,6 +1,5 @@
 from os import listdir
 from os.path import isfile, join
-from time import sleep
 
 import asyncio
 
@@ -16,6 +15,9 @@ async def tcp_echo_client(message):
 
     print('Close the connection')
     writer.close()
+
+    await asyncio.sleep(5)
+
 
 # file_path = '007bbfb7.json'
 # file_path = 'f2829549.json'
@@ -34,5 +36,4 @@ for f in onlyfiles:
     in_out = '0'
     command = f + ',' + train_type + ',' + in_out
     asyncio.run(tcp_echo_client(command))
-    sleep(1)
 

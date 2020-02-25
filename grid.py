@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as clr
 import numpy as np
 import json
+from time import sleep
 
 run_once = 0 
 
@@ -95,7 +96,7 @@ def read_json(file_path):
         return json.load(json_data)
 
 
-def rendering(file_path, train_type, in_out, index=0):
+def rendering(file_path, train_type, in_out):
     data = read_json(file_path)
 
     # train_type - 0: 'train', 1: 'test'
@@ -110,21 +111,24 @@ def rendering(file_path, train_type, in_out, index=0):
     if train_type != 0:
         val_train = 'test'
 
-    np_data = np.array( data[val_train][index]['input'] )
-    np_out_data = np.array( data[val_train][index]['output'] )
+    # print('length: {}'.format(len(data['train'])))
+    length = len(data['train'])
 
-    show_grid(np_data, np_out_data)
+    for i in range(length):
+        np_data = np.array( data[val_train][i]['input'] )
+        np_out_data = np.array( data[val_train][i]['output'] )
+        show_grid(np_data, np_out_data)
+        sleep(0.5)
 
 def main():
     print('version: {}'.format(0))
 
     train_type = 0
     in_out = 0
-    file_path = 'f2829549.json'
-    rendering(file_path, train_type, in_out)
-
     # # file_path = '007bbfb7.json'
-    # file_path = 'f2829549.json'
+    file_path = 'f2829549.json'
+
+    # rendering(file_path, train_type, in_out)
 
     # data = read_json(file_path)
 
