@@ -16,7 +16,7 @@ ax = fig.add_subplot(121)
 ax_out = fig.add_subplot(122)
 
 plt.ion()
-
+fig.show()
 
 # def init_grid():
 #     run_once = 0 
@@ -78,20 +78,16 @@ def show_grid(np_array, np_out_array):
         ax_out.axis('off')
 
         # make a figure 
-        fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
 
-        plt.show()
     else:
         # im.set_array(np_array.ravel())
         im.set_array(np_array)
         im_out.set_array(np_out_array)
-        fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
 
-        plt.draw()
 
 def read_json(file_path):
     with open(file_path) as json_data:
