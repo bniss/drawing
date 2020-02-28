@@ -22,12 +22,14 @@ plt.ion()
 #     run_once = 0 
 im = None
 im_out = None
+grid_on = True
 
 def show_grid(np_array, np_out_array):
-    global run_once, im
+    global run_once, im, grid_on
 
     # if run_once == 1:
     #     plt.close()
+    # fig.clf()
 
     array_shape = np_array.shape
     x = array_shape[0]
@@ -43,22 +45,25 @@ def show_grid(np_array, np_out_array):
     # set the 'bad' values (nan) to be white and transparent
     my_cmap.set_bad(color='w', alpha=0)
 
-    bound = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    my_norm = clr.BoundaryNorm(bound, my_cmap.N, clip=True)
+    bound = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # my_norm = clr.BoundaryNorm(bound, my_cmap.N, clip=True)
+    my_norm = clr.BoundaryNorm(bound, my_cmap.N)
 
-    # # draw the grid
-    for i in range(x + 1):
-        ax.axhline(i, lw=2, color='k', zorder=5)
+    if grid_on:
+        linecolor = 'darkgray'
+        linewidth = 0.5
+        # # draw the grid
+        for i in range(x + 1):
+            ax.axhline(i, lw=linewidth, color=linecolor, zorder=5)
 
-    for j in range(y + 1):
-        ax.axvline(j, lw=2, color='k', zorder=5)
-        ax_out.axvline(j, lw=2, color='k', zorder=5)
+        for j in range(y + 1):
+            ax.axvline(j, lw=linewidth, color=linecolor, zorder=5)
 
-    for i in range(x_out + 1):
-        ax_out.axhline(i, lw=2, color='k', zorder=5)
+        for i in range(x_out + 1):
+            ax_out.axhline(i, lw=linewidth, color=linecolor, zorder=5)
 
-    for j in range(y_out + 1):
-        ax_out.axvline(j, lw=2, color='k', zorder=5)
+        for j in range(y_out + 1):
+            ax_out.axvline(j, lw=linewidth, color=linecolor, zorder=5)
 
     # draw the boxes
     im = ax.imshow(np_array, interpolation='none', cmap=my_cmap, norm=my_norm, extent=[0, y, 0, x], zorder=0)
@@ -72,16 +77,13 @@ def show_grid(np_array, np_out_array):
         ax.axis('off')
         ax_out.axis('off')
 
-        print('client A request')
-        # make a figure + axes
-        # fig, ax = plt.subplots(1, 1, tight_layout=True)
+        # make a figure 
         fig.show()
         fig.canvas.draw()
         fig.canvas.flush_events()
 
         plt.show()
     else:
-        print('client B, C, D, ... request')
         # im.set_array(np_array.ravel())
         im.set_array(np_array)
         im_out.set_array(np_out_array)
@@ -96,20 +98,19 @@ def read_json(file_path):
         return json.load(json_data)
 
 
-def rendering(file_path, train_type, in_out):
+def rendering(file_path, grid_on_off, sleep_time=1):
+    global grid_on
+
+    if grid_on_off == '1':
+        grid_on = True
+    else:
+        grid_on = False 
+
     data = read_json(file_path)
 
     # train_type - 0: 'train', 1: 'test'
     # in_out     - 0: input,   1: output
-
     val_train = 'train'
-    val_in_out = 'input'
-
-    if in_out != 0:
-        val_in_out = 'output'
-
-    if train_type != 0:
-        val_train = 'test'
 
     # print('length: {}'.format(len(data['train'])))
     length = len(data['train'])
@@ -118,7 +119,7 @@ def rendering(file_path, train_type, in_out):
         np_data = np.array( data[val_train][i]['input'] )
         np_out_data = np.array( data[val_train][i]['output'] )
         show_grid(np_data, np_out_data)
-        sleep(0.5)
+        sleep(sleep_time)
 
 def main():
     print('version: {}'.format(0))
