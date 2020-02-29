@@ -10,3 +10,7 @@ $ python3 server.py
 // in the other console
 
 $ python3 client.py
+
+// log
+
+2020.02.29: generate images from input data

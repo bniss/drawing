@@ -5,6 +5,8 @@ import matplotlib.colors as clr
 import numpy as np
 import json
 from time import sleep
+import io
+
 
 run_once = 0 
 
@@ -18,18 +20,12 @@ ax_out = fig.add_subplot(122)
 plt.ion()
 fig.show()
 
-# def init_grid():
-#     run_once = 0 
 im = None
 im_out = None
 grid_on = True
 
 def show_grid(np_array, np_out_array):
     global run_once, im, grid_on
-
-    # if run_once == 1:
-    #     plt.close()
-    # fig.clf()
 
     array_shape = np_array.shape
     x = array_shape[0]
@@ -77,16 +73,21 @@ def show_grid(np_array, np_out_array):
         ax.axis('off')
         ax_out.axis('off')
 
-        # make a figure 
-        fig.canvas.draw()
-        fig.canvas.flush_events()
-
     else:
         # im.set_array(np_array.ravel())
         im.set_array(np_array)
         im_out.set_array(np_out_array)
-        fig.canvas.draw()
-        fig.canvas.flush_events()
+
+    # make a figure 
+    fig.canvas.draw()
+    fig.canvas.flush_events()
+
+    # make in-memory data
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png', dpi=fig.dpi)
+    buffer.seek(0)
+    mem_img = buffer.getvalue()
+    return mem_img
 
 
 def read_json(file_path):
@@ -94,28 +95,27 @@ def read_json(file_path):
         return json.load(json_data)
 
 
-def rendering(file_path, grid_on_off, sleep_time=1):
+def rendering(file_path, grid_on_off, sleep_time=0.5):
     global grid_on
 
     if grid_on_off == '1':
         grid_on = True
     else:
         grid_on = False 
-
     data = read_json(file_path)
-
     # train_type - 0: 'train', 1: 'test'
     # in_out     - 0: input,   1: output
     val_train = 'train'
-
-    # print('length: {}'.format(len(data['train'])))
+    img_array = []
     length = len(data['train'])
-
     for i in range(length):
         np_data = np.array( data[val_train][i]['input'] )
         np_out_data = np.array( data[val_train][i]['output'] )
-        show_grid(np_data, np_out_data)
+        # show_grid(np_data, np_out_data)
+        img_array.append(show_grid(np_data, np_out_data))
         sleep(sleep_time)
+
+    return length, img_array 
 
 def main():
     print('version: {}'.format(0))
