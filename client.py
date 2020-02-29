@@ -26,7 +26,7 @@ async def tcp_echo_client(message):
 # command = file_path + ',' + show_grid + ',' + sleep_time 
 # asyncio.run(tcp_echo_client(command))
 
-file_save = False
+file_save = True 
 file_count = 0
 file_path = './training'
 onlyfiles = [join(file_path, f) for f in listdir(file_path) if isfile(join(file_path, f)) ]
