@@ -115,39 +115,26 @@ def rendering(file_path, grid_on_off, sleep_time=0.5):
         img_array.append(show_grid(np_data, np_out_data))
         sleep(sleep_time)
 
-    return length, img_array 
+    return img_array 
 
 def main():
     print('version: {}'.format(0))
 
-    train_type = 0
-    in_out = 0
-    # # file_path = '007bbfb7.json'
-    file_path = 'f2829549.json'
-
+    # train_type = 0
+    # in_out = 0
+    # file_path = './training/007bbfb7.json'
+    # file_path = 'f2829549.json'
     # rendering(file_path, train_type, in_out)
-
     # data = read_json(file_path)
-
     # print('test input: {}'.format(data['test'][0]['input']))
-
-    # print('------------------------------')
-
     # print('length: {}'.format(len(data['train'])))
-
     # # print('train input: {}'.format(data['train'][0]['input']))
-
     # np_input_data = np.array( data['train'][0]['input'] )
     # print('train input: {}'.format(np_input_data))
-
     # print('train input shape: {}'.format(np_input_data.shape))
-
-    # print('------------------------------')
-
     # np_output_data = np.array( data['train'][0]['output'] )
     # print('train output: {}'.format(np_output_data))
     # print('train output shape: {}'.format(np_output_data.shape))
-
     # show_grid(np_input_data)
     # # show_grid(np_output_data)
 
