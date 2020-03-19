@@ -37,7 +37,7 @@ for f in onlyfiles:
     fn = f2[0]
     print('{}'.format(fn))
     show_grid = '0'
-    sleep_time = '1'
+    sleep_time = '0.1'
     command = f + ',' + show_grid + ',' + sleep_time 
 
     if file_save:
